@@ -1,0 +1,8 @@
+## Interface: 80205
+## Title: QuestClicker
+## Author: jwierzbicki
+## Notes: Accepts and completes quests with one click.
+## Version: 1.0
+## SavedVariables: mySavedVar
+
+main.lua
