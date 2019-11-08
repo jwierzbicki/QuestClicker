@@ -3,6 +3,6 @@
 ## Author: jwierzbicki
 ## Notes: Accepts and completes quests with one click.
 ## Version: 1.0
-## SavedVariables: mySavedVar
+## SavedVariables: qclickSavedVar
 
 main.lua
