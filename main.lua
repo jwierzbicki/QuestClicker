@@ -16,32 +16,52 @@ function DoQuestThing(self, button, down)
 end
 
 function QuestEventHandler(self, event, ...)
-	print("Quest event " .. event)
+	print("Quest event:" .. event)
+
+	-- Handle new quests
 	local numNewQuests = GetNumGossipAvailableQuests()
 	if numNewQuests > 0 then
 		if event == "GOSSIP_SHOW" then
-			SelectGossipAvailableQuest(1) -- 1 for now
+			-- always select first, then accept it on next QUEST_DETAIL that automatically triggers after this function call
+			SelectGossipAvailableQuest(1)
 		end
 		if event == "QUEST_DETAIL" then
-			AcceptQuest() -- window is kept opened after accepting last quest if there are more than 1 available
+			-- potentially to fix: window is kept opened after accepting last quest if there are more than 1 available
+			AcceptQuest()
 		end
 	end
 
+	-- Handle available/completed quests
 	local numActiveQuests = GetNumGossipActiveQuests()
 	if numActiveQuests > 0 then
 		if event == "GOSSIP_SHOW" then
 			title1, level1, isLowLevel1, isComplete1, isLegendary1, isIgnored1, title2, level2, isLowLevel2, isComplete2, isLegendary2, isIgnored2 = GetGossipActiveQuests()
 			if isComplete1 then
-				SelectGossipActiveQuest(1)
-			elseif isComplete2 then
-				SelectGossipActiveQuest(2)
+				-- completed quests are sorted at the top, so always choose first
+				SelectGossipActiveQuest(1) -- will trigger QUEST_PROGRESS event
+			end
+		end
+		-- this will trigger only if quest isCompletable, so don't check it
+		if event == "QUEST_COMPLETE" then
+			local numRewards = GetNumQuestChoices()
+			if numRewards <= 1 then
+				GetQuestReward()
+			end
+		end
+		-- this usually triggers when there is only one quest to turn in
+		if event == "QUEST_PROGRESS" then
+			if IsQuestCompletable() then
+				-- progress to the completion dialog (clicks continue, next screen has Complete quest option)
+				CompleteQuest()
+				-- get number of rewards
+				local numRewards = GetNumQuestChoices()
+				-- if there is no choice (usually numRewards == 0), automatically accept it
+				if numRewards <= 1 then
+					GetQuestReward()
+				end
 			end
 		end
 	end
-
-	-- if numNewQuests == 0 then -- automatically closes the window, so this is not the solution to the window left opened after accepting last quest
-	-- 	CloseGossip()
-	-- end
 end
 
 eventFlags = {}
@@ -71,4 +91,5 @@ questEventsFrame:RegisterEvent("QUEST_DETAIL")
 questEventsFrame:RegisterEvent("QUEST_FINISHED")
 questEventsFrame:RegisterEvent("QUEST_PROGRESS")
 questEventsFrame:RegisterEvent("QUEST_ACCEPTED")
+questEventsFrame:RegisterEvent("QUEST_COMPLETE")
 questEventsFrame:SetScript("OnEvent", QuestEventHandler)

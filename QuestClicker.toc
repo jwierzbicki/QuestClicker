@@ -1,7 +1,7 @@
 ## Interface: 80205
 ## Title: QuestClicker
 ## Author: jwierzbicki
-## Notes: Accepts and completes quests with one click.
+## Notes: Automatically accepts and completes quests.
 ## Version: 1.0
 ## SavedVariables: qclickSavedVar
 
