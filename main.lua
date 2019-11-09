@@ -39,7 +39,7 @@ function QuestEventHandler(self, event, ...)
 		end
 	end
 
-	-- if numNewQuests == 0 then -- automatically closes the window, this is not the solution
+	-- if numNewQuests == 0 then -- automatically closes the window, so this is not the solution to the window left opened after accepting last quest
 	-- 	CloseGossip()
 	-- end
 end
